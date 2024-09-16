@@ -70,7 +70,7 @@ The backend handles the following functionalities:
 
     ```sh
     git clone https://github.com/Majidied/chatbot-open-source-v13.git
-    cd chatbot-open-source-V13/chatbot-open-source-V13-backend
+    cd chatbot-open-source-V13/open-source-chatbot-V13-backend
     ```
 
 2. **Install dependencies**:
@@ -108,7 +108,7 @@ The frontend provides the user interface for interacting with the chatbot. It is
 1. **Navigate to the frontend directory**:
 
     ```sh
-    cd chatbot-open-source-V13/chatbot-open-source-V13-frontend
+    cd chatbot-open-source-V13/open-source-chatbot-V13-frontend
     ```
 
 2. **Install dependencies**:
