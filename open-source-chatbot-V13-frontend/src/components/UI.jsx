@@ -122,6 +122,7 @@ export const UI = ({ hidden, ...props }) => {
           </button>
         </div>
         <div className="flex items-center gap-2 pointer-events-auto max-w-screen-sm w-full mx-auto">
+        {/* supprimer cette input */}
           <input
             className="w-full placeholder:text-gray-800 placeholder:italic p-4 rounded-md bg-opacity-50 bg-white backdrop-blur-md"
             placeholder="Type a message or use voice..."
@@ -140,6 +141,8 @@ export const UI = ({ hidden, ...props }) => {
           >
             {recognitionActive ? "Listening..." : "Speak"}
           </button>
+
+          {/* supprimer cette button */}
           <button
             disabled={loading || message}
             onClick={sendMessage}
