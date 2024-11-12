@@ -15,30 +15,12 @@
 body {
   margin: 0;
   background-color: #ff0000;
-  background-image: linear-gradient(19deg, #ff0000 0%, #0000ff 100%);
+  background-image: linear-gradient(19deg, #ff0000 0%, #ffffff 100%);
   animation: dynamicGradient 10s ease infinite;
 }
 
 body.greenScreen {
   background-color: #00ff00;
   background-image: none;
-}
-
-@keyframes dynamicGradient {
-  0% {
-    background-image: linear-gradient(19deg, #ff0000 0%, #0000ff 100%); /* Rouge à bleu */
-  }
-  25% {
-    background-image: linear-gradient(45deg, #ff4e50 0%, #1c92d2 100%); /* Rouge clair à bleu clair */
-  }
-  50% {
-    background-image: linear-gradient(60deg, #ff6b6b 0%, #4b79a1 100%); /* Rouge orangé à bleu foncé */
-  }
-  75% {
-    background-image: linear-gradient(90deg, #ff0000 0%, #1e3c72 100%); /* Rouge vif à bleu nuit */
-  }
-  100% {
-    background-image: linear-gradient(19deg, #ff0000 0%, #0000ff 100%); /* Retour au rouge à bleu */
-  }
 }
 

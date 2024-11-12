@@ -73,11 +73,11 @@ export const UI = ({ hidden, ...props }) => {
 
       <div className="w-full flex flex-col items-end justify-center gap-4">
         {/* Sélecteur de langue */}
-        <div className="fixed bottom-4 left-4 flex items-center">
+        <div className="fixed bottom-4 left-4 flex items-center transition-all duration-3000 ease-in-out rounded-md shadow-md bg-white pointer-events-auto">
           <select
             value={language}
             onChange={handleLanguageChange}
-            className="pointer-events-auto bg-white p-2 rounded-md"
+            className="pointer-events-auto hover:bg-gray-200 hover:text-black p-1 m-0.5 bg-red-500 rounded text-white shadow-md focus:outline-none hover:shadow-lg font-bold transition duration-300 ease-in-out cursor-pointer w-26 h-12 border border-red-500 focus:border-red-700"
           >
             <option value="en-US">English</option>
             <option value="fr-FR">Français</option>
@@ -89,11 +89,10 @@ export const UI = ({ hidden, ...props }) => {
         <div className="fixed bottom-4 right-4 flex justify-center">
           <button
             onClick={toggleVoiceRecognition}
-            className={`pointer-events-auto p-4 rounded-full w-16 h-16 text-white transition-all duration-300 ease-in-out flex items-center justify-center ${
-              recognitionActive
+            className={`pointer-events-auto p-4 rounded-full w-16 h-16 text-white transition-all duration-300 ease-in-out flex items-center justify-center ${recognitionActive
                 ? "bg-green-500 hover:bg-green-600 scale-105" // État actif
                 : "bg-pink-500 hover:bg-pink-600 scale-100"  // État normal
-            }`}
+              }`}
             style={{
               boxShadow: recognitionActive
                 ? "0px 4px 15px rgba(0, 128, 0, 0.6)" // Ombre verte si actif
