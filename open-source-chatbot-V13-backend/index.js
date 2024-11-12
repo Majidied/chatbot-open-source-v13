@@ -43,7 +43,7 @@ const generateSpeech = async (text) => {
     const mp3 = await openai.audio.speech.create({
       model: "tts-1-hd", // Specify model if applicable
       voice: "nova", // Specify voice if applicable
-      speed: 0.95, // Speed of speech
+      speed: 0.90, // Speed of speech
       input: text,
     });
     return Buffer.from(await mp3.arrayBuffer());
