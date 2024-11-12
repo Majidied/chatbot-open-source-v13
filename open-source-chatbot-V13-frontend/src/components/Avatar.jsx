@@ -37,9 +37,9 @@ const facialExpressions = {
     mouthSmileRight: 0.35499733688813034,
   },
   sad: {
-    mouthFrownLeft: 1,
-    mouthFrownRight: 1,
-    mouthShrugLower: 0.78341,
+    mouthFrownLeft: 0.60,
+    mouthFrownRight: 0.60,
+    mouthShrugLower: 0.41,
     browInnerUp: 0.452,
     eyeSquintLeft: 0.72,
     eyeSquintRight: 0.75,
@@ -51,26 +51,26 @@ const facialExpressions = {
     eyeWideLeft: 0.5,
     eyeWideRight: 0.5,
     jawOpen: 0.351,
-    mouthFunnel: 1,
+    mouthFunnel: 0.22,
     browInnerUp: 1,
   },
   angry: {
     browDownLeft: 1,
-    browDownRight: 1,
-    eyeSquintLeft: 1,
+    browDownRight: 0.9999999941970116,
+    eyeSquintLeft: 0.9999999983751632,
     eyeSquintRight: 1,
     jawForward: 1,
-    jawLeft: 1,
-    mouthShrugLower: 1,
-    noseSneerLeft: 1,
-    noseSneerRight: 0.42,
-    eyeLookDownLeft: 0.16,
-    eyeLookDownRight: 0.16,
+    jawLeft: 0.22,
+    mouthShrugLower: 0.872,
+    noseSneerLeft: 0.6100000000000004,
+    noseSneerRight: 0.6300000000000004,
+    eyeLookDownLeft: 0.16000000197301611,
+    eyeLookDownRight: 0.16000000197301611,
     cheekSquintLeft: 1,
     cheekSquintRight: 1,
-    mouthClose: 0.23,
-    mouthFunnel: 0.63,
-    mouthDimpleRight: 1,
+    mouthClose: 0.14,
+    mouthFunnel: 0.64,
+    mouthDimpleRight: 0.59
   },
   crazy: {
     browInnerUp: 0.9,
@@ -108,7 +108,7 @@ let setupMode = false;
 
 export function Avatar(props) {
   const { nodes, materials, scene } = useGLTF(
-    "/models/64f1a714fe61576b46f27ca2.glb"
+    "/models/Oscara1.glb"
   );
 
   const { message, onMessagePlayed, chat } = useChat();
