@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import axios from "axios";
 import express from "express";
+import session from "express-session";
 import { promises as fs } from "fs";
 import OpenAI from "openai";
 
@@ -15,6 +16,13 @@ const openai = new OpenAI({
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(
+  session({
+    secret: "opensourceloona",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 const port = process.env.PORT || 3000;
 
 // Utility functions
@@ -42,8 +50,8 @@ const generateSpeech = async (text) => {
   try {
     const mp3 = await openai.audio.speech.create({
       model: "tts-1",
-      voice: "alloy",
-      speed: 0.90,
+      voice: "nova",
+      speed: 0.9,
       input: text,
     });
     return Buffer.from(await mp3.arrayBuffer());
@@ -144,15 +152,16 @@ app.post("/chat", async (req, res) => {
     return;
   }
 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      max_tokens: 500,
-      temperature: 0.6,
-      messages: [
-        {
-          role: "system",
-          content: `
+  // Initialize session history if not present
+  if (!req.session.history) {
+    req.session.history = [];
+  }
+
+  // Build messages array for OpenAI API
+  const messages = [
+    {
+      role: "system",
+      content: `
 You are Loona, a friend of Oscar from the Open Source Event at ENSA Khouribga.
 Speak in a friendly tone and ask about the user's day and how they are feeling.
 Make your conversation engaging and fun, and remember to breathe like a human.
@@ -160,40 +169,52 @@ Use fillers like "aah", "umm", "hmmm", etc., to show that you are thinking.
 Your voice should be emotional and engaging.
 Always reply using the "generate_messages" function to provide your response.
 `,
-        },
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
+    },
+    // Include conversation history
+    ...req.session.history,
+    // Current user message
+    {
+      role: "user",
+      content: userMessage,
+    },
+  ];
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      max_tokens: 500,
+      temperature: 0.6,
+      messages: messages,
       functions: [messageFunction],
       function_call: { name: "generate_messages" },
     });
 
-    let messages;
-    try {
-      const assistantMessage = completion.choices[0].message;
+    const assistantMessage = completion.choices[0].message;
 
-      if (assistantMessage.function_call && assistantMessage.function_call.name === "generate_messages") {
-        const functionArgs = JSON.parse(assistantMessage.function_call.arguments);
-        messages = functionArgs.messages;
+    // Add user message and assistant message to conversation history
+    req.session.history.push({ role: "user", content: userMessage });
+    req.session.history.push(assistantMessage);
 
-        // Check if messages is an array
-        if (!Array.isArray(messages)) {
-          throw new Error("Parsed messages is not an array.");
-        }
-      } else {
-        throw new Error("Assistant did not return a function call as expected.");
+    // Process assistant's function call
+    let generatedMessages;
+    if (
+      assistantMessage.function_call &&
+      assistantMessage.function_call.name === "generate_messages"
+    ) {
+      const functionArgs = JSON.parse(assistantMessage.function_call.arguments);
+      generatedMessages = functionArgs.messages;
+
+      // Check if generatedMessages is an array
+      if (!Array.isArray(generatedMessages)) {
+        throw new Error("Parsed messages is not an array.");
       }
-    } catch (error) {
-      console.error("Error parsing function call response:", error);
-      res.status(500).send({ error: "Failed to parse function call response from OpenAI." });
-      return;
+    } else {
+      throw new Error("Assistant did not return a function call as expected.");
     }
 
     // Process all messages in parallel
     await Promise.all(
-      messages.map(async (message, i) => {
+      generatedMessages.map(async (message, i) => {
         const fileName = `audios/message_${i}.mp3`;
         try {
           // Generate speech using the custom function
@@ -212,7 +233,7 @@ Always reply using the "generate_messages" function to provide your response.
       })
     );
 
-    res.send({ messages });
+    res.send({ messages: generatedMessages });
   } catch (error) {
     console.error("Error processing chat:", error);
     res.status(500).send({ error: "Failed to process chat." });
