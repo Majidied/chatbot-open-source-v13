@@ -28,8 +28,8 @@ export const UI = ({ hidden, ...props }) => {
         const text =
           event.results[event.results.length - 1][0].transcript;
         setRecognizedText(text);
-        setTimeout
-        // sendMessage(text);
+        sendMessage(text);
+        setTimeout(() => setRecognizedText(""), 3000);
       };
 
       recognitionRef.current.onerror = (event) => {
