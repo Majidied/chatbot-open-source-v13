@@ -42,7 +42,7 @@ const generateSpeech = async (text) => {
   try {
     const mp3 = await openai.audio.speech.create({
       model: "tts-1",
-      voice: "onyx",
+      voice: "alloy",
       speed: 0.90,
       input: text,
     });
@@ -72,6 +72,42 @@ const lipSyncMessage = async (messageIndex) => {
 
   await execCommand(`ffmpeg -y -i ${mp3File} ${wavFile}`);
   await execCommand(`./bin/rhubarb -f json -o ${jsonFile} ${wavFile} -r phonetic`);
+};
+
+// Define the message function schema for OpenAI Function Calling
+const messageFunction = {
+  name: "generate_messages",
+  description: "Generate a list of messages with text, facial expression, and animation",
+  parameters: {
+    type: "object",
+    properties: {
+      messages: {
+        type: "array",
+        description: "A list of messages",
+        items: {
+          type: "object",
+          properties: {
+            text: {
+              type: "string",
+              description: "The message text",
+            },
+            facialExpression: {
+              type: "string",
+              description: "Facial expression for the message",
+              enum: ["smile", "sad", "angry", "surprised", "funnyFace", "shocked", "thinking", "default"],
+            },
+            animation: {
+              type: "string",
+              description: "Animation for the message",
+              enum: ["Talking_0", "Talking_1", "Talking_2", "Crying", "Laughing", "Rumba", "Idle", "Terrified", "Angry"],
+            },
+          },
+          required: ["text", "facialExpression", "animation"],
+        },
+      },
+    },
+    required: ["messages"],
+  },
 };
 
 // Routes
@@ -111,38 +147,47 @@ app.post("/chat", async (req, res) => {
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      max_tokens: 200,
+      max_tokens: 500,
       temperature: 0.6,
       messages: [
         {
           role: "system",
           content: `
-            You are a Loona, a friend of Oscar from Open source Event From Ensa Khouribga.
-            Talk with a friendly tone and ask about the user's day and how they are feeling.
-            Make your conversation engaging and fun and don’t forget to breathe like a human.
-            Use aah, umm, hmmm, etc., to show that you are thinking.
-            Your voice should be emotional and engaging.
-            You will always reply with a JSON array of messages with a maximum of 3 messages.
-            Each message has a text, facialExpression, and animation property.
-            The different facial expressions are: smile, sad, angry, surprised, funnyFace, shocked, thinking, and default.
-            The different animations are: Talking_0, Talking_1, Talking_2, Crying, Laughing, Rumba, Idle, Terrified, Angry, and Rumba.
-          `,
+You are Loona, a friend of Oscar from the Open Source Event at ENSA Khouribga.
+Speak in a friendly tone and ask about the user's day and how they are feeling.
+Make your conversation engaging and fun, and remember to breathe like a human.
+Use fillers like "aah", "umm", "hmmm", etc., to show that you are thinking.
+Your voice should be emotional and engaging.
+Always reply using the "generate_messages" function to provide your response.
+`,
         },
         {
           role: "user",
           content: userMessage,
         },
       ],
+      functions: [messageFunction],
+      function_call: { name: "generate_messages" },
     });
 
     let messages;
     try {
-      const rawContent = completion.choices[0].message.content;
-      const sanitizedContent = rawContent.replace(/```json|```/g, '');
-      messages = JSON.parse(sanitizedContent);
+      const assistantMessage = completion.choices[0].message;
+
+      if (assistantMessage.function_call && assistantMessage.function_call.name === "generate_messages") {
+        const functionArgs = JSON.parse(assistantMessage.function_call.arguments);
+        messages = functionArgs.messages;
+
+        // Check if messages is an array
+        if (!Array.isArray(messages)) {
+          throw new Error("Parsed messages is not an array.");
+        }
+      } else {
+        throw new Error("Assistant did not return a function call as expected.");
+      }
     } catch (error) {
-      console.error("Error parsing JSON response:", error);
-      res.status(500).send({ error: "Failed to parse JSON response from OpenAI." });
+      console.error("Error parsing function call response:", error);
+      res.status(500).send({ error: "Failed to parse function call response from OpenAI." });
       return;
     }
 
