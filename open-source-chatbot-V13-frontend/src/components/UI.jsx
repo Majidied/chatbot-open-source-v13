@@ -57,6 +57,13 @@ export const UI = ({ hidden, ...props }) => {
     };
   }, [language]);
 
+  const sendMessage = (text) => {
+    if (!loading && !message) {
+      chat(text);
+      setTimeout(() => setStatusMessage(""), 3000);
+    }
+  };
+
   const toggleVoiceRecognition = () => {
     if (recognitionRef.current) {
       if (recognitionActive) {
