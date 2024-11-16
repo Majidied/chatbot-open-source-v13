@@ -16,10 +16,13 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "elevenlabs-node": "^1.2.0",
+    "execa": "^9.5.1",
     "express": "^4.19.2",
+    "fluent-ffmpeg": "^2.1.3",
     "gtts": "^0.2.1",
     "openai": "^4.58.1",
-    "r3f-virtual-girlfriend-backend": "file:"
+    "r3f-virtual-girlfriend-backend": "file:",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

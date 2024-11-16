@@ -23,18 +23,28 @@ const facialExpressions = {
     mouthPressRight: 0.41000000000000003,
   },
   funnyFace: {
-    jawLeft: 0.63,
-    mouthPucker: 0.53,
-    noseSneerLeft: 1,
-    noseSneerRight: 0.39,
-    mouthLeft: 1,
-    eyeLookUpLeft: 1,
-    eyeLookUpRight: 1,
-    cheekPuff: 0.9999924982764238,
-    mouthDimpleLeft: 0.414743888682652,
-    mouthRollLower: 0.32,
-    mouthSmileLeft: 0.35499733688813034,
-    mouthSmileRight: 0.35499733688813034,
+    viseme_PP: 0.32,
+    viseme_TH: 0.3,
+    viseme_DD: 0.35000000000000003,
+    viseme_CH: 0.03,
+    viseme_RR: 0.23,
+    viseme_E: 0.16,
+    viseme_O: 0.1,
+    jawLeft: 0.6299985169041813,
+    mouthPucker: 0.5299987523162164,
+    noseSneerLeft: 0.58,
+    noseSneerRight: 0.38999908189306487,
+    eyeLookUpLeft: 0.52,
+    eyeLookUpRight: 0.49,
+    eyeLookInLeft: 0.31,
+    eyeLookInRight: 0.28,
+    cheekPuff: 0.16,
+    mouthDimpleLeft: 0.12,
+    mouthRollLower: 0.2,
+    mouthPressLeft: 0.71,
+    mouthPressRight: 1,
+    mouthSmileLeft: 0.07,
+    mouthSmileRight: 0.17
   },
   sad: {
     mouthFrownLeft: 0.60,
@@ -166,7 +176,7 @@ export function Avatar(props) {
             set({
               [target]: value,
             });
-          } catch (e) {}
+          } catch (e) { }
         }
       }
     });
@@ -257,7 +267,7 @@ export function Avatar(props) {
         }
         const value =
           nodes.EyeLeft.morphTargetInfluences[
-            nodes.EyeLeft.morphTargetDictionary[key]
+          nodes.EyeLeft.morphTargetDictionary[key]
           ];
         if (value > 0.01) {
           emotionValues[key] = value;

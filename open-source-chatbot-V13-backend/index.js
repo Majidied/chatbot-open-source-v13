@@ -41,9 +41,9 @@ const audioFileToBase64 = async (file) => {
 const generateSpeech = async (text) => {
   try {
     const mp3 = await openai.audio.speech.create({
-      model: "tts-1-hd", // Specify model if applicable
-      voice: "nova", // Specify voice if applicable
-      speed: 0.90, // Speed of speech
+      model: "tts-1",
+      voice: "onyx",
+      speed: 0.90,
       input: text,
     });
     return Buffer.from(await mp3.arrayBuffer());
@@ -55,7 +55,6 @@ const generateSpeech = async (text) => {
 
 // Lip Sync Function
 const lipSyncMessage = async (messageIndex) => {
-  const startTime = Date.now();
   const mp3File = `audios/message_${messageIndex}.mp3`;
   const wavFile = `audios/message_${messageIndex}.wav`;
   const jsonFile = `audios/message_${messageIndex}.json`;
@@ -71,13 +70,8 @@ const lipSyncMessage = async (messageIndex) => {
     return;
   }
 
-  console.log(`Starting conversion for message ${messageIndex}`);
   await execCommand(`ffmpeg -y -i ${mp3File} ${wavFile}`);
-  console.log(`Conversion done in ${Date.now() - startTime}ms`);
-
-  console.log(`Starting lip sync for message ${messageIndex}`);
   await execCommand(`./bin/rhubarb -f json -o ${jsonFile} ${wavFile} -r phonetic`);
-  console.log(`Lip sync done in ${Date.now() - startTime}ms`);
 };
 
 // Routes
@@ -116,19 +110,19 @@ app.post("/chat", async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-3.5-turbo",
       max_tokens: 200,
       temperature: 0.6,
       messages: [
         {
           role: "system",
           content: `
-            You are a Loona a friend of Oscar from Open source Event From Ensa Khouribga.
-            talk with a friendly tone and ask about the user's day and how they are feeling.
-            make your conversation engaging and fun and dont forget to breathe like a human.
-            use aah, umm, hmmm, etc. to show that you are thinking.
-            and your voice should be emotional and engaging.
-            You will always reply with a JSON array of messages. With a maximum of 3 messages.
+            You are a Loona, a friend of Oscar from Open source Event From Ensa Khouribga.
+            Talk with a friendly tone and ask about the user's day and how they are feeling.
+            Make your conversation engaging and fun and don’t forget to breathe like a human.
+            Use aah, umm, hmmm, etc., to show that you are thinking.
+            Your voice should be emotional and engaging.
+            You will always reply with a JSON array of messages with a maximum of 3 messages.
             Each message has a text, facialExpression, and animation property.
             The different facial expressions are: smile, sad, angry, surprised, funnyFace, shocked, thinking, and default.
             The different animations are: Talking_0, Talking_1, Talking_2, Crying, Laughing, Rumba, Idle, Terrified, Angry, and Rumba.
@@ -144,7 +138,7 @@ app.post("/chat", async (req, res) => {
     let messages;
     try {
       const rawContent = completion.choices[0].message.content;
-      const sanitizedContent = rawContent.replace(/```json|```/g, ''); // remove any ```json or ```
+      const sanitizedContent = rawContent.replace(/```json|```/g, '');
       messages = JSON.parse(sanitizedContent);
     } catch (error) {
       console.error("Error parsing JSON response:", error);
@@ -152,27 +146,26 @@ app.post("/chat", async (req, res) => {
       return;
     }
 
+    // Process all messages in parallel
+    await Promise.all(
+      messages.map(async (message, i) => {
+        const fileName = `audios/message_${i}.mp3`;
+        try {
+          // Generate speech using the custom function
+          const strText = message.text;
+          console.log(`Generating speech for message ${i}:`, strText);
+          const audioData = await generateSpeech(strText);
+          await fs.writeFile(fileName, audioData);
+        } catch (error) {
+          console.error("OpenAI TTS API Error:", error);
+          return res.status(500).send({ error: "OpenAI TTS API request failed." });
+        }
 
-    for (let i = 0; i < messages.length; i++) {
-      console.log(messages);
-      const message = messages[i];
-      console.log(`Processing message ${i}:`, message);
-      const fileName = `audios/message_${i}.mp3`;
-      try {
-        // Generate speech using the custom function
-        const strText = message.text;
-        console.log(`Generating speech for message ${i}:`, strText);
-        const audioData = await generateSpeech(strText);
-        await fs.writeFile(fileName, audioData);
-      } catch (error) {
-        console.error("OpenAI TTS API Error:", error);
-        return res.status(500).send({ error: "OpenAI TTS API request failed." });
-      }
-
-      await lipSyncMessage(i);
-      message.audio = await audioFileToBase64(fileName);
-      message.lipsync = await readJsonTranscript(`audios/message_${i}.json`);
-    }
+        await lipSyncMessage(i);
+        message.audio = await audioFileToBase64(fileName);
+        message.lipsync = await readJsonTranscript(`audios/message_${i}.json`);
+      })
+    );
 
     res.send({ messages });
   } catch (error) {
