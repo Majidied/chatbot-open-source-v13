@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useChat } from "../hooks/useChat";
-import "@fortawesome/fontawesome-free/css/all.min.css"; // Ensure FontAwesome is imported
+import { FaMicrophone } from "react-icons/fa";
 
 export const UI = ({ hidden, ...props }) => {
   const { chat, loading, message } = useChat();
@@ -131,8 +131,8 @@ export const UI = ({ hidden, ...props }) => {
             }}
             aria-label="Toggle Voice Recognition"
           >
-            <i className="fas fa-microphone text-2xl"></i>
-          </button>
+            <FaMicrophone size={24} />
+      </button>
         </div>
       </div>
 

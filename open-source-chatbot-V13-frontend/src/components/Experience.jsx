@@ -42,7 +42,7 @@ export const Experience = () => {
   const { cameraZoomed } = useChat();
 
   useEffect(() => {
-    cameraControls.current.setLookAt(0, 2, 5, 0, 1.5, 0);
+    cameraControls.current.setLookAt(0, 1.5, 1.5, 0, 1.5, 0);
   }, []);
 
   useEffect(() => {

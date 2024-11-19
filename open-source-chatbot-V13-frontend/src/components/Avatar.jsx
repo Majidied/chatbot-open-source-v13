@@ -118,10 +118,11 @@ let setupMode = false;
 
 export function Avatar(props) {
   const { nodes, materials, scene } = useGLTF(
-    "/models/Oscara1.glb"
+    "/models/Vector.glb"
   );
 
   const { message, onMessagePlayed, chat } = useChat();
+  const [isTalking, setIsTalking] = useState(false);
 
   const [lipsync, setLipsync] = useState();
 
@@ -131,6 +132,7 @@ export function Avatar(props) {
       setAnimation("Idle");
       return;
     }
+    setIsTalking(true);
     setAnimation(message.animation);
     setFacialExpression(message.facialExpression);
     setLipsync(message.lipsync);
@@ -138,22 +140,42 @@ export function Avatar(props) {
     audio.play();
     setAudio(audio);
     audio.onended = onMessagePlayed;
+    return () => {
+      setIsTalking(false);
+      setAudio(null);
+    }
   }, [message]);
 
-  const { animations } = useGLTF("/models/animations.glb");
+  const { animations } = useGLTF("/animations/animations.glb");
 
   const group = useRef();
-  const { actions, mixer } = useAnimations(animations, group);
-  const [animation, setAnimation] = useState(
-    animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
-  );
-  useEffect(() => {
-    actions[animation]
-      .reset()
-      .fadeIn(mixer.stats.actions.inUse === 0 ? 0 : 0.5)
-      .play();
-    return () => actions[animation].fadeOut(0.5);
-  }, [animation]);
+const { actions, mixer } = useAnimations(animations, group);
+const idleAnimations = ["Idle", "Idle", "Idle", "Idle_01", "Idle", "Idle", "Idle_02", "Idle", "Idle", "Idle_03", "Idle", "Idle", "Idle_04", "Idle", "Idle", "Idle_05", "Idle", "Idle", "Idle_06", "Idle", "Idle", "Idle_07", "Idle","Idle", "Idle_08", "Idle", "Idle"];
+const [animation, setAnimation] = useState(
+  animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
+);
+
+useEffect(() => {
+  if (isTalking) {
+    return; // Don't randomize animations while talking
+  }
+  const playAnimation = () => {
+    const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+    setAnimation(randomAnimation);
+  };
+
+  const interval = setInterval(playAnimation, 6000); // Change animation every 6 seconds
+
+  return () => clearInterval(interval);
+}, [isTalking]);
+
+useEffect(() => {
+  actions[animation]
+    .reset()
+    .fadeIn(mixer.stats.actions.inUse === 0 ? 0 : 0.5)
+    .play();
+  return () => actions[animation].fadeOut(0.5);
+}, [animation]);
 
   const lerpMorphTarget = (target, value, speed = 0.1) => {
     scene.traverse((child) => {
@@ -314,9 +336,9 @@ export function Avatar(props) {
     nextBlink();
     return () => clearTimeout(blinkTimeout);
   }, []);
-
+//     <group {...props} dispose={null} ref={group}>
   return (
-    <group {...props} dispose={null} ref={group}>
+    <group {...props} dispose={null} ref={group} position={[0, 0.1, -1]}>
       <primitive object={nodes.Hips} />
       <skinnedMesh
         name="Wolf3D_Body"
@@ -384,5 +406,5 @@ export function Avatar(props) {
   );
 }
 
-useGLTF.preload("/models/64f1a714fe61576b46f27ca2.glb");
+useGLTF.preload("/models/Vector.glb");
 useGLTF.preload("/models/animations.glb");

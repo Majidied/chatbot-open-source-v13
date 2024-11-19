@@ -49,9 +49,9 @@ const audioFileToBase64 = async (file) => {
 const generateSpeech = async (text) => {
   try {
     const mp3 = await openai.audio.speech.create({
-      model: "tts-1",
-      voice: "nova",
-      speed: 0.9,
+      model: "tts-1-hd",
+      voice: "onyx",
+      speed: 0.95,
       input: text,
     });
     return Buffer.from(await mp3.arrayBuffer());
@@ -85,7 +85,7 @@ const lipSyncMessage = async (messageIndex) => {
 // Define the message function schema for OpenAI Function Calling
 const messageFunction = {
   name: "generate_messages",
-  description: "Generate a list of messages with text, facial expression, and animation",
+  description: "Generate a list of messages with text, facial expression, and animation for each message. should not more or less than 5 seconds",
   parameters: {
     type: "object",
     properties: {
@@ -107,7 +107,7 @@ const messageFunction = {
             animation: {
               type: "string",
               description: "Animation for the message",
-              enum: ["Talking_0", "Talking_1", "Talking_2", "Crying", "Laughing", "Rumba", "Idle", "Terrified", "Angry"],
+              enum: ["Talking_1", "Talking_2", "Talking_3", "Talking_4", "Standing_arguing", "Yelling", "Greeting", "Shaking_hands", "Quick_formal_bow", "Salute", "Sad_idle", "Salsa Dancing", "Hip_hop_dancing", "Angry_point", "Angry_crossed_armes", "Angry_gesture", "Pointing_forward", "Pointing_exited", "Kneeling_pointing_right", "Kneeling_pointing_left", "Whatever_gesture", "Goalkeeper_catch", "Telling_a_secret", "Clapping", "Exited", "Defeated", "Spin_in_place", "Pain_gesture"],
             },
           },
           required: ["text", "facialExpression", "animation"],
@@ -167,6 +167,9 @@ Speak in a friendly tone and ask about the user's day and how they are feeling.
 Make your conversation engaging and fun, and remember to breathe like a human.
 Use fillers like "aah", "umm", "hmmm", etc., to show that you are thinking.
 Your voice should be emotional and engaging.
+you can be a goal keeper, salsa dancer, hip hop dancer, or any other character.
+if someone ask about sports, you can be a goal keeper.
+feel free to use different animations to make the conversation more interactive.
 Always reply using the "generate_messages" function to provide your response.
 `,
     },
@@ -181,7 +184,7 @@ Always reply using the "generate_messages" function to provide your response.
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       max_tokens: 500,
       temperature: 0.6,
       messages: messages,
