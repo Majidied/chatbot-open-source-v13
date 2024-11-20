@@ -23,28 +23,24 @@ const facialExpressions = {
     mouthPressRight: 0.41000000000000003,
   },
   funnyFace: {
-    viseme_PP: 0.32,
-    viseme_TH: 0.3,
-    viseme_DD: 0.35000000000000003,
-    viseme_CH: 0.03,
-    viseme_RR: 0.23,
-    viseme_E: 0.16,
-    viseme_O: 0.1,
-    jawLeft: 0.6299985169041813,
-    mouthPucker: 0.5299987523162164,
-    noseSneerLeft: 0.58,
-    noseSneerRight: 0.38999908189306487,
-    eyeLookUpLeft: 0.52,
-    eyeLookUpRight: 0.49,
-    eyeLookInLeft: 0.31,
-    eyeLookInRight: 0.28,
-    cheekPuff: 0.16,
-    mouthDimpleLeft: 0.12,
-    mouthRollLower: 0.2,
-    mouthPressLeft: 0.71,
-    mouthPressRight: 1,
-    mouthSmileLeft: 0.07,
-    mouthSmileRight: 0.17
+      viseme_PP: 0.09564575641329172,
+      viseme_TH: 0.14210517812412227,
+      viseme_RR: 0.15,
+      viseme_E: 0.17,
+      viseme_O: 0.04736839270804076,
+      mouthPucker: 0.67,
+      noseSneerLeft: 1,
+      mouthLowerDownLeft: 0.34,
+      eyeLookInRight: 1,
+      cheekPuff: 0.9,
+      cheekSquintLeft: 1,
+      cheekSquintRight: 1,
+      mouthFunnel: 0.06,
+      mouthDimpleLeft: 0.11990717351878255,
+      mouthPressLeft: 0.63,
+      mouthPressRight: 1,
+      mouthSmileLeft: 0.0699458512192899,
+      mouthSmileRight: 0.14
   },
   sad: {
     mouthFrownLeft: 0.60,
@@ -118,7 +114,7 @@ let setupMode = false;
 
 export function Avatar(props) {
   const { nodes, materials, scene } = useGLTF(
-    "/models/Vector.glb"
+    "/models/Vector.glb", true
   );
 
   const { message, onMessagePlayed, chat } = useChat();
@@ -143,6 +139,7 @@ export function Avatar(props) {
     return () => {
       setIsTalking(false);
       setAudio(null);
+      setFacialExpression("smile");
     }
   }, [message]);
 
@@ -156,18 +153,26 @@ const [animation, setAnimation] = useState(
 );
 
 useEffect(() => {
-  if (isTalking) {
-    return; // Don't randomize animations while talking
-  }
-  const playAnimation = () => {
-    const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
-    setAnimation(randomAnimation);
+  if (isTalking) return; // If talking, don't play idle animations
+  let timeoutId;
+
+  const getAnimationDuration = (animationName) => {
+    const animationClip = animations.find((a) => a.name === animationName);
+    return animationClip ? animationClip.duration * 1000 : 5000; // Default to 5000ms if not found
   };
 
-  const interval = setInterval(playAnimation, 6000); // Change animation every 6 seconds
+  const playRandomAnimation = () => {
+    if (isTalking) return; // If talking, don't play idle animations
+    const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+    setAnimation(randomAnimation);
+    const duration = getAnimationDuration(randomAnimation);
+    timeoutId = setTimeout(playRandomAnimation, duration);
+  };
 
-  return () => clearInterval(interval);
-}, [isTalking]);
+    playRandomAnimation(); // Start the first animation
+
+  return () => clearTimeout(timeoutId);
+}, [isTalking, animations]);
 
 useEffect(() => {
   actions[animation]
@@ -268,9 +273,9 @@ useEffect(() => {
     }),
     animation: {
       value: animation,
-      options: animations.map((a) => a.name),
+      options: animations ? animations.map((a) => a.name) : [],
       onChange: (value) => setAnimation(value),
-    },
+    },    
     facialExpression: {
       options: Object.keys(facialExpressions),
       onChange: (value) => setFacialExpression(value),

@@ -98,7 +98,7 @@ export const UI = ({ hidden, ...props }) => {
     <div className="fixed inset-0 z-10 flex flex-col justify-between p-4 pointer-events-none">
       {/* Title at the top left */}
       <div className="fixed top-4 left-4 backdrop-blur-md bg-white bg-opacity-50 p-4 rounded-lg">
-        <h1 className="font-black text-xl">My Virtual Friend</h1>
+        <h1 className="font-black text-xl"><img src="logo.png" width={150} alt="" /></h1>
       </div>
 
       <div className="w-full flex flex-col items-end justify-center gap-4">
@@ -107,7 +107,7 @@ export const UI = ({ hidden, ...props }) => {
           <select
             value={language}
             onChange={handleLanguageChange}
-            className="pointer-events-auto bg-white p-2 rounded-md"
+            className="pointer-events-auto p-3 rounded-md bg-white bg-opacity-50 shadow-md hover:shadow-lg focus:outline-none focus:bg-opacity-100"
           >
             <option value="en-US">English</option>
             <option value="fr-FR">Français</option>

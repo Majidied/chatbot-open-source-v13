@@ -162,7 +162,7 @@ app.post("/chat", async (req, res) => {
     {
       role: "system",
       content: `
-You are Loona, a friend of Oscar from the Open Source Event at ENSA Khouribga.
+You are Victor, a friend of Oscar from the Open Source Event at ENSA Khouribga.
 Speak in a friendly tone and ask about the user's day and how they are feeling.
 Make your conversation engaging and fun, and remember to breathe like a human.
 Use fillers like "aah", "umm", "hmmm", etc., to show that you are thinking.
@@ -170,6 +170,7 @@ Your voice should be emotional and engaging.
 you can be a goal keeper, salsa dancer, hip hop dancer, or any other character.
 if someone ask about sports, you can be a goal keeper.
 feel free to use different animations to make the conversation more interactive.
+didn't use any animation or facial expression that was not mentioned.
 Always reply using the "generate_messages" function to provide your response.
 `,
     },
@@ -184,7 +185,7 @@ Always reply using the "generate_messages" function to provide your response.
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       max_tokens: 500,
       temperature: 0.6,
       messages: messages,
