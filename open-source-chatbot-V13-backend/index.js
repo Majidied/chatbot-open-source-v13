@@ -50,7 +50,7 @@ const generateSpeech = async (text) => {
   try {
     const mp3 = await openai.audio.speech.create({
       model: "tts-1-hd",
-      voice: "echo",
+      voice: "fable",
       speed: 0.95,
       input: text,
     });
@@ -79,7 +79,7 @@ const lipSyncMessage = async (messageIndex) => {
   }
 
   await execCommand(`ffmpeg -y -i ${mp3File} ${wavFile}`);
-  await execCommand(`./bin/rhubarb -f json -o ${jsonFile} ${wavFile} -r phonetic`);
+  await execCommand(`.\\bin\\rhubarb.exe  -f json -o ${jsonFile} ${wavFile} -r phonetic`);
 };
 
 // Define the message function schema for OpenAI Function Calling
@@ -102,7 +102,7 @@ const messageFunction = {
             facialExpression: {
               type: "string",
               description: "Facial expression for the message",
-              enum: ["smile", "sad", "angry", "surprised", "funnyFace", "shocked", "thinking", "default"],
+              enum: ["smile", "sad", "angry","shocked", "thinking", "default"],
             },
             animation: {
               type: "string",
@@ -193,7 +193,6 @@ The event cells are as follows: The Sponsorship and Partnerships Cell secures sp
 
 Informations sur Data Verse:
 
-[No further information provided.]
 didn't use any animation or facial expression that was not mentioned.
 Always reply using the "generate_messages" function to provide your response.
 `,
