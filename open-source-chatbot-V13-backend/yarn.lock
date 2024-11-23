@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@google-cloud/text-to-speech@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.npmjs.org/@google-cloud/text-to-speech/-/text-to-speech-5.5.0.tgz"
-  integrity sha512-Cw/UK2Y3l31Vsuozu8cxsmVS/09fShimes0tRLgDbOY2ZMG1Dckb6Zf/Q3Nxg4X0feFep44pvwNmyHKrOnl9SQ==
+"@google-cloud/text-to-speech@^5.6.0":
+  version "5.6.0"
+  resolved "https://registry.npmjs.org/@google-cloud/text-to-speech/-/text-to-speech-5.6.0.tgz"
+  integrity sha512-5VSrqSPdEJ+uRS0tcASoW+XbV5jLbNT1Fs04oWeQ657o2U2gEON1pG/nm5Xln7Ojp5KUow28mTlD/YvwyK+D6g==
   dependencies:
     google-gax "^4.0.3"
 
@@ -233,6 +233,11 @@ anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
+arabic-reshaper@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/arabic-reshaper/-/arabic-reshaper-1.1.0.tgz"
+  integrity sha512-DfF1CxCCgLi0XsqHFdr2cdi/7qEoupT76+6Q2vPPWroS6dinvKbomKMZD9AYxKAb+SXK+UYFuS3iBD0/ZVOzyw==
+
 array-flatten@1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/array-flatten/-/array-flatten-1.1.1.tgz"
@@ -412,6 +417,11 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/code-point-at/-/code-point-at-1.1.0.tgz"
   integrity sha512-RpAVKQA5T63xEj6/giIbUEtZwJ4UFIc3ZtvEkiaUERylqe8xb5IvqcgOurZLahv93CLKfxcw5YI+DZcUBRyLXA==
+
+collapse-white-space@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/collapse-white-space/-/collapse-white-space-2.1.0.tgz"
+  integrity sha512-loKTxY1zCOuG4j9f6EPnuyyYkf58RnhhWTvRoZEokgB+WbdXehfjFviyOVYkqzEWz1Q5kRiZdBYS5SwxbQYwzw==
 
 color-convert@^2.0.1:
   version "2.0.1"
@@ -851,6 +861,13 @@ forwarded@0.2.0:
   version "0.2.0"
   resolved "https://registry.npmjs.org/forwarded/-/forwarded-0.2.0.tgz"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
+
+franc@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.npmjs.org/franc/-/franc-6.2.0.tgz"
+  integrity sha512-rcAewP7PSHvjq7Kgd7dhj82zE071kX5B4W1M4ewYMf/P+i6YsDQmj62Xz3VQm9zyUzUXwhIde/wHLGCMrM+yGg==
+  dependencies:
+    trigram-utils "^2.0.0"
 
 fresh@0.5.2:
   version "0.5.2"
@@ -1388,6 +1405,11 @@ multistream@^2.0.5:
     inherits "^2.0.1"
     readable-stream "^2.0.5"
 
+n-gram@^2.0.0:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/n-gram/-/n-gram-2.0.2.tgz"
+  integrity sha512-S24aGsn+HLBxUGVAUFOwGpKs7LBcG4RudKU//eWzt/mQ97/NMKQxDWHyHx63UNWk/OOdihgmzoETn1tf5nQDzQ==
+
 negotiator@0.6.3:
   version "0.6.3"
   resolved "https://registry.npmjs.org/negotiator/-/negotiator-0.6.3.tgz"
@@ -1680,6 +1702,7 @@ qs@~6.5.2:
   dependencies:
     "@google-cloud/text-to-speech" "^5.5.0"
     "@huggingface/inference" "^2.8.0"
+    arabic-reshaper "^1.1.0"
     axios "^1.7.7"
     cors "^2.8.5"
     dotenv "^16.4.5"
@@ -1688,6 +1711,7 @@ qs@~6.5.2:
     express "^4.19.2"
     express-session "^1.18.1"
     fluent-ffmpeg "^2.1.3"
+    franc "^6.2.0"
     gtts "^0.2.1"
     openai "^4.58.1"
     r3f-virtual-girlfriend-backend "file:"
@@ -2098,6 +2122,14 @@ tr46@~0.0.3:
   version "0.0.3"
   resolved "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
+
+trigram-utils@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/trigram-utils/-/trigram-utils-2.0.1.tgz"
+  integrity sha512-nfWIXHEaB+HdyslAfMxSqWKDdmqY9I32jS7GnqpdWQnLH89r6A5sdk3fDVYqGAZ0CrT8ovAFSAo6HRiWcWNIGQ==
+  dependencies:
+    collapse-white-space "^2.0.0"
+    n-gram "^2.0.0"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"

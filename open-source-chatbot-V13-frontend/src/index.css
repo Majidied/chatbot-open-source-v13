@@ -14,8 +14,8 @@
 
 body {
   margin: 0;
-  background-color: #000000;
-  /* background-image: linear-gradient(19deg, #ff0000 0%, #ffffff 100%); */
+  background-color: #ff0000;
+  background-image: linear-gradient(19deg, #ff0000 0%, #ffffff 100%);
   animation: dynamicGradient 10s ease infinite;
 }
 

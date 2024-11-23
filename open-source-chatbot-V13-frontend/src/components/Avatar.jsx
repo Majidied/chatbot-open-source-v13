@@ -146,7 +146,7 @@ export function Avatar(props) {
 
   const group = useRef();
   const { actions, mixer } = useAnimations(animations, group);
-  const idleAnimations = ["Idle", "Idle", "Idle", "Idle_01", "Idle", "Idle", "Idle_02", "Idle", "Idle", "Idle_03", "Idle", "Idle", "Idle_04", "Idle", "Idle", "Idle_05", "Idle", "Idle", "Idle_06", "Idle", "Idle", "Idle_07", "Idle", "Idle", "Idle_08", "Idle", "Idle"];
+  const idleAnimations = ["Idle", "Idle", "Idle", "Idle_01", "Idle", "Idle", "Idle_02", "Idle", "Idle", "Idle_03", "Idle", "Idle", "Idle_04", "Idle", "Idle", "Idle_05", "Idle", "Idle", "Idle_06", "Idle", "Idle", "Idle_07", "Idle", "Idle", "Idle_08", "Idle", "Idle", "Idle_09", "Idle_10", "Idle_11", "Idle_12"]
   const [animation, setAnimation] = useState(
     animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
   );
@@ -342,7 +342,7 @@ export function Avatar(props) {
   }, []);
   //     <group {...props} dispose={null} ref={group}>
   return (
-    <group {...props} dispose={null} ref={group} position={[0, 0.1, -1]}>
+    <group {...props} dispose={null} ref={group} position={[0, 0.2, 0]}>
       <primitive object={nodes.Hips} />
       <skinnedMesh
         name="Wolf3D_Body"
