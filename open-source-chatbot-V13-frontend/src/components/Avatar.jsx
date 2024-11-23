@@ -23,24 +23,24 @@ const facialExpressions = {
     mouthPressRight: 0.41000000000000003,
   },
   funnyFace: {
-      viseme_PP: 0.09564575641329172,
-      viseme_TH: 0.14210517812412227,
-      viseme_RR: 0.15,
-      viseme_E: 0.17,
-      viseme_O: 0.04736839270804076,
-      mouthPucker: 0.67,
-      noseSneerLeft: 1,
-      mouthLowerDownLeft: 0.34,
-      eyeLookInRight: 1,
-      cheekPuff: 0.9,
-      cheekSquintLeft: 1,
-      cheekSquintRight: 1,
-      mouthFunnel: 0.06,
-      mouthDimpleLeft: 0.11990717351878255,
-      mouthPressLeft: 0.63,
-      mouthPressRight: 1,
-      mouthSmileLeft: 0.0699458512192899,
-      mouthSmileRight: 0.14
+    viseme_PP: 0.09564575641329172,
+    viseme_TH: 0.14210517812412227,
+    viseme_RR: 0.15,
+    viseme_E: 0.17,
+    viseme_O: 0.04736839270804076,
+    mouthPucker: 0.67,
+    noseSneerLeft: 1,
+    mouthLowerDownLeft: 0.34,
+    eyeLookInRight: 1,
+    cheekPuff: 0.9,
+    cheekSquintLeft: 1,
+    cheekSquintRight: 1,
+    mouthFunnel: 0.06,
+    mouthDimpleLeft: 0.11990717351878255,
+    mouthPressLeft: 0.63,
+    mouthPressRight: 1,
+    mouthSmileLeft: 0.0699458512192899,
+    mouthSmileRight: 0.14
   },
   sad: {
     mouthFrownLeft: 0.60,
@@ -54,11 +54,10 @@ const facialExpressions = {
     jawForward: 1,
   },
   surprised: {
-    eyeWideLeft: 0.5,
-    eyeWideRight: 0.5,
-    jawOpen: 0.351,
-    mouthFunnel: 0.22,
-    browInnerUp: 1,
+    browInnerUp: 0.9996566348450061,
+    eyeWideLeft: 0.4996867106258911,
+    eyeWideRight: 0.4996867106258911,
+    mouthFunnel: 0.17
   },
   angry: {
     browDownLeft: 1,
@@ -146,41 +145,41 @@ export function Avatar(props) {
   const { animations } = useGLTF("/animations/animations.glb");
 
   const group = useRef();
-const { actions, mixer } = useAnimations(animations, group);
-const idleAnimations = ["Idle", "Idle", "Idle", "Idle_01", "Idle", "Idle", "Idle_02", "Idle", "Idle", "Idle_03", "Idle", "Idle", "Idle_04", "Idle", "Idle", "Idle_05", "Idle", "Idle", "Idle_06", "Idle", "Idle", "Idle_07", "Idle","Idle", "Idle_08", "Idle", "Idle"];
-const [animation, setAnimation] = useState(
-  animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
-);
+  const { actions, mixer } = useAnimations(animations, group);
+  const idleAnimations = ["Idle", "Idle", "Idle", "Idle_01", "Idle", "Idle", "Idle_02", "Idle", "Idle", "Idle_03", "Idle", "Idle", "Idle_04", "Idle", "Idle", "Idle_05", "Idle", "Idle", "Idle_06", "Idle", "Idle", "Idle_07", "Idle", "Idle", "Idle_08", "Idle", "Idle"];
+  const [animation, setAnimation] = useState(
+    animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
+  );
 
-useEffect(() => {
-  if (isTalking) return; // If talking, don't play idle animations
-  let timeoutId;
-
-  const getAnimationDuration = (animationName) => {
-    const animationClip = animations.find((a) => a.name === animationName);
-    return animationClip ? animationClip.duration * 1000 : 5000; // Default to 5000ms if not found
-  };
-
-  const playRandomAnimation = () => {
+  useEffect(() => {
     if (isTalking) return; // If talking, don't play idle animations
-    const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
-    setAnimation(randomAnimation);
-    const duration = getAnimationDuration(randomAnimation);
-    timeoutId = setTimeout(playRandomAnimation, duration);
-  };
+    let timeoutId;
+
+    const getAnimationDuration = (animationName) => {
+      const animationClip = animations.find((a) => a.name === animationName);
+      return animationClip ? animationClip.duration * 1000 : 5000; // Default to 5000ms if not found
+    };
+
+    const playRandomAnimation = () => {
+      if (isTalking) return; // If talking, don't play idle animations
+      const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+      setAnimation(randomAnimation);
+      const duration = getAnimationDuration(randomAnimation);
+      timeoutId = setTimeout(playRandomAnimation, duration);
+    };
 
     playRandomAnimation(); // Start the first animation
 
-  return () => clearTimeout(timeoutId);
-}, [isTalking, animations]);
+    return () => clearTimeout(timeoutId);
+  }, [isTalking, animations]);
 
-useEffect(() => {
-  actions[animation]
-    .reset()
-    .fadeIn(mixer.stats.actions.inUse === 0 ? 0 : 0.5)
-    .play();
-  return () => actions[animation].fadeOut(0.5);
-}, [animation]);
+  useEffect(() => {
+    actions[animation]
+      .reset()
+      .fadeIn(mixer.stats.actions.inUse === 0 ? 0 : 0.5)
+      .play();
+    return () => actions[animation].fadeOut(0.5);
+  }, [animation]);
 
   const lerpMorphTarget = (target, value, speed = 0.1) => {
     scene.traverse((child) => {
@@ -275,7 +274,7 @@ useEffect(() => {
       value: animation,
       options: animations ? animations.map((a) => a.name) : [],
       onChange: (value) => setAnimation(value),
-    },    
+    },
     facialExpression: {
       options: Object.keys(facialExpressions),
       onChange: (value) => setFacialExpression(value),
@@ -341,7 +340,7 @@ useEffect(() => {
     nextBlink();
     return () => clearTimeout(blinkTimeout);
   }, []);
-//     <group {...props} dispose={null} ref={group}>
+  //     <group {...props} dispose={null} ref={group}>
   return (
     <group {...props} dispose={null} ref={group} position={[0, 0.1, -1]}>
       <primitive object={nodes.Hips} />

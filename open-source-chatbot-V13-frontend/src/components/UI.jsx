@@ -112,6 +112,15 @@ export const UI = ({ hidden, ...props }) => {
             <option value="en-US">English</option>
             <option value="fr-FR">Français</option>
             <option value="ar-SA">العربية</option>
+            <option value="es-ES">Español</option>
+            <option value="de-DE">Deutsch</option>
+            <option value="it-IT">Italiano</option>
+            <option value="ja-JP">Japanese</option>
+            <option value="ko-KR">Korean</option>
+            <option value="pt-BR">Português</option>
+            <option value="ru-RU">Russian</option>
+            <option value="zh-CN">Chinese</option>
+            <option value="tr-TR">Türkçe</option>
           </select>
         </div>
 
