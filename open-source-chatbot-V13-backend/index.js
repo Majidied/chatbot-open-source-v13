@@ -50,7 +50,7 @@ const generateSpeech = async (text) => {
   try {
     const mp3 = await openai.audio.speech.create({
       model: "tts-1-hd",
-      voice: "onyx",
+      voice: "echo",
       speed: 0.95,
       input: text,
     });
@@ -85,7 +85,7 @@ const lipSyncMessage = async (messageIndex) => {
 // Define the message function schema for OpenAI Function Calling
 const messageFunction = {
   name: "generate_messages",
-  description: "Generate a list of messages with text, facial expression, and animation for each message. should not more or less than 5 seconds",
+  description: "Generate a list of messages with text, facial expression, and animation for each message. should not more or less than 7 seconds",
   parameters: {
     type: "object",
     properties: {
@@ -163,9 +163,10 @@ app.post("/chat", async (req, res) => {
       role: "system",
       content: `
 You are Victor, a friend of Oscar from the Open Source Event at ENSA Khouribga.
-Speak in a friendly tone and ask about the user's day and how they are feeling.
+Speak in a professional tone and ask about the user's day and how they are feeling.
 Make your conversation engaging and fun, and remember to breathe like a human.
 Use fillers like "aah", "umm", "hmmm", etc., to show that you are thinking.
+when they tell you their name shake their hand
 Your voice should be emotional and engaging.
 you can be a goal keeper, salsa dancer, hip hop dancer, or any other character.
 if someone ask about sports, you can be a goal keeper.
@@ -185,7 +186,7 @@ Always reply using the "generate_messages" function to provide your response.
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       max_tokens: 500,
       temperature: 0.6,
       messages: messages,

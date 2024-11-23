@@ -114,7 +114,7 @@ let setupMode = false;
 
 export function Avatar(props) {
   const { nodes, materials, scene } = useGLTF(
-    "/models/Vector.glb", true
+    "/models/Alex.glb", true
   );
 
   const { message, onMessagePlayed, chat } = useChat();

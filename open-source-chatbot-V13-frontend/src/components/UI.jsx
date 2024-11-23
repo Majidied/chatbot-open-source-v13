@@ -119,7 +119,7 @@ export const UI = ({ hidden, ...props }) => {
         <div className="fixed bottom-4 right-4 flex justify-center">
           <button
             onClick={toggleVoiceRecognition}
-            className={`pointer-events-auto p-4 rounded-full w-16 h-16 text-white transition-all duration-300 ease-in-out flex items-center justify-center ${
+            className={`pointer-events-auto p-4 border rounded-full w-16 h-16 text-white transition-all duration-300 ease-in-out flex items-center justify-center ${
               recognitionActive
                 ? "bg-green-500 hover:bg-green-600 scale-105"
                 : "bg-pink-500 hover:bg-pink-600 scale-100"
