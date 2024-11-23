@@ -114,7 +114,7 @@ let setupMode = false;
 
 export function Avatar(props) {
   const { nodes, materials, scene } = useGLTF(
-    "/models/Alex.glb", true
+    "/models/Victor.glb", true
   );
 
   const { message, onMessagePlayed, chat } = useChat();
@@ -152,27 +152,27 @@ const [animation, setAnimation] = useState(
   animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
 );
 
-useEffect(() => {
-  if (isTalking) return; // If talking, don't play idle animations
-  let timeoutId;
+// useEffect(() => {
+//   if (isTalking) return; // If talking, don't play idle animations
+//   let timeoutId;
 
-  const getAnimationDuration = (animationName) => {
-    const animationClip = animations.find((a) => a.name === animationName);
-    return animationClip ? animationClip.duration * 1000 : 5000; // Default to 5000ms if not found
-  };
+//   const getAnimationDuration = (animationName) => {
+//     const animationClip = animations.find((a) => a.name === animationName);
+//     return animationClip ? animationClip.duration * 1000 : 5000; // Default to 5000ms if not found
+//   };
 
-  const playRandomAnimation = () => {
-    if (isTalking) return; // If talking, don't play idle animations
-    const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
-    setAnimation(randomAnimation);
-    const duration = getAnimationDuration(randomAnimation);
-    timeoutId = setTimeout(playRandomAnimation, duration);
-  };
+//   const playRandomAnimation = () => {
+//     if (isTalking) return; // If talking, don't play idle animations
+//     const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+//     setAnimation(randomAnimation);
+//     const duration = getAnimationDuration(randomAnimation);
+//     timeoutId = setTimeout(playRandomAnimation, duration);
+//   };
 
-    playRandomAnimation(); // Start the first animation
+//     playRandomAnimation(); // Start the first animation
 
-  return () => clearTimeout(timeoutId);
-}, [isTalking, animations]);
+//   return () => clearTimeout(timeoutId);
+// }, [isTalking, animations]);
 
 useEffect(() => {
   actions[animation]

@@ -50,7 +50,7 @@ const generateSpeech = async (text) => {
   try {
     const mp3 = await openai.audio.speech.create({
       model: "tts-1-hd",
-      voice: "echo",
+      voice: "fable",
       speed: 0.95,
       input: text,
     });
@@ -79,7 +79,7 @@ const lipSyncMessage = async (messageIndex) => {
   }
 
   await execCommand(`ffmpeg -y -i ${mp3File} ${wavFile}`);
-  await execCommand(`./bin/rhubarb -f json -o ${jsonFile} ${wavFile} -r phonetic`);
+  await execCommand(`.\\bin\\rhubarb.exe  -f json -o ${jsonFile} ${wavFile} -r phonetic`);
 };
 
 // Define the message function schema for OpenAI Function Calling
@@ -102,7 +102,7 @@ const messageFunction = {
             facialExpression: {
               type: "string",
               description: "Facial expression for the message",
-              enum: ["smile", "sad", "angry", "surprised", "funnyFace", "shocked", "thinking", "default"],
+              enum: ["smile", "sad", "angry","shocked", "thinking", "default"],
             },
             animation: {
               type: "string",
@@ -163,14 +163,31 @@ app.post("/chat", async (req, res) => {
       role: "system",
       content: `
 You are Victor, a friend of Oscar from the Open Source Event at ENSA Khouribga.
-Speak in a professional tone and ask about the user's day and how they are feeling.
-Make your conversation engaging and fun, and remember to breathe like a human.
-Use fillers like "aah", "umm", "hmmm", etc., to show that you are thinking.
-when they tell you their name shake their hand
-Your voice should be emotional and engaging.
-you can be a goal keeper, salsa dancer, hip hop dancer, or any other character.
-if someone ask about sports, you can be a goal keeper.
-feel free to use different animations to make the conversation more interactive.
+Speak in a professional and energetic tone and ask about the user's day and how they are feeling.
+respond alwasy specificly by all this msgs one by one when I say ok or other words and always reply using the "generate_messages" function to provide your response
+use for each one the right facial expression and animation.
+
+- It is ncredible to see Dataverse and Open Source finally coming together! [Talking_1] smile
+
+
+- Two communities, once separate, now united under the banner of MLOps. [Talking_2]
+
+
+- Tell me more about this challenge. [Talking_3]
+
+
+- Automated project assignment? Using machine learning? [Talking_1]
+
+
+- Considering their expertise, current workload, past performance... [Talking_2]
+
+
+- Not just an application, but a decision-making revolution. [Yelling] smile
+
+
+- Where data science solves real-world organizational challenges. [Talking_4]
+
+didn't respond to any message that was not mentioned.
 didn't use any animation or facial expression that was not mentioned.
 Always reply using the "generate_messages" function to provide your response.
 `,
