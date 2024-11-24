@@ -3,24 +3,27 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --leva-sizes-rootWidth: 340px;
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
 }
 
 #root {
   width: 100vw;
   height: 100vh;
+  position: relative;
 }
 
-body {
-  margin: 0;
-  background-color: #ff0000;
-  background-image: linear-gradient(19deg, #ff0000 0%, #ffffff 100%);
-  animation: dynamicGradient 10s ease infinite;
+.video-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
 }
-
-body.greenScreen {
-  background-color: #00ff00;
-  background-image: none;
-}
-
