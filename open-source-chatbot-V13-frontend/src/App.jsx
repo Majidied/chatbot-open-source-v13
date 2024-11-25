@@ -18,7 +18,7 @@ function App() {
 
       {/* 3D Scene and UI */}
       <Loader />
-      <Leva />
+      <Leva hidden />
       <UI />
       <Canvas shadows camera={{ position: [0, 0, 0], fov: 50 }}>
         <Experience />

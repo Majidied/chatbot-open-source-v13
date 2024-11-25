@@ -131,7 +131,7 @@ const lipSyncMessage = async (messageIndex, text) => {
 const messageFunction = {
   name: "generate_messages",
   description:
-    "Generate a list of messages with text, facial expression, and animation for each message. should not more or less than 7 seconds",
+    "Generate a list of messages with text, facial expression, and animation for each message. should not more or less than 7 seconds, more than 2 messages",
   parameters: {
     type: "object",
     properties: {
@@ -236,7 +236,7 @@ app.post("/chat", async (req, res) => {
   const messages = [
     {
       role: "system",
-      content: "Respond always and always by: " + trainingData[7].text + " " + trainingData[7].facialExpression + " " + trainingData[7].animation,
+      content: content
     },
     // Include conversation history
     ...req.session.history,

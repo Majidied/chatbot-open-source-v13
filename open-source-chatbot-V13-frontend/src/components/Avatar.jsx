@@ -146,32 +146,32 @@ export function Avatar(props) {
 
   const group = useRef();
   const { actions, mixer } = useAnimations(animations, group);
-  const idleAnimations = ["Idle", "Idle", "Idle", "Idle_01", "Idle", "Idle", "Idle_02", "Idle", "Idle", "Idle_03", "Idle", "Idle", "Idle_04", "Idle", "Idle", "Idle_05", "Idle", "Idle", "Idle_06", "Idle", "Idle", "Idle_07", "Idle", "Idle", "Idle_08", "Idle", "Idle", "Idle_09", "Idle_10", "Idle_11", "Idle_12"]
+  const idleAnimations = ["Idle", "Idle", "Idle", "Idle_01", "Idle", "Idle", "Idle_02", "Idle", "Idle", "Idle_03", "Idle", "Idle", "Idle_04", "Idle", "Idle", "Idle_05", "Idle", "Idle", "Idle_06", "Idle", "Idle", "Idle_07", "Idle", "Idle", "Idle_08", "Idle", "Idle", "Idle_09", "Idle", "Idle", "Idle_10", "Idle", "Idle", "Idle_11", "Idle", "Idle", "Idle_12", "Idle", "Idle"]
   const [animation, setAnimation] = useState(
     animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
   );
 
-  // useEffect(() => {
-  //   if (isTalking) return; // If talking, don't play idle animations
-  //   let timeoutId;
+  useEffect(() => {
+    if (isTalking) return; // If talking, don't play idle animations
+    let timeoutId;
 
-  //   const getAnimationDuration = (animationName) => {
-  //     const animationClip = animations.find((a) => a.name === animationName);
-  //     return animationClip ? animationClip.duration * 1000 : 5000; // Default to 5000ms if not found
-  //   };
+    const getAnimationDuration = (animationName) => {
+      const animationClip = animations.find((a) => a.name === animationName);
+      return animationClip ? animationClip.duration * 1000 : 5000; // Default to 5000ms if not found
+    };
 
-  //   const playRandomAnimation = () => {
-  //     if (isTalking) return; // If talking, don't play idle animations
-  //     const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
-  //     setAnimation(randomAnimation);
-  //     const duration = getAnimationDuration(randomAnimation);
-  //     timeoutId = setTimeout(playRandomAnimation, duration);
-  //   };
+    const playRandomAnimation = () => {
+      if (isTalking) return; // If talking, don't play idle animations
+      const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+      setAnimation(randomAnimation);
+      const duration = getAnimationDuration(randomAnimation);
+      timeoutId = setTimeout(playRandomAnimation, duration);
+    };
 
-  //   playRandomAnimation(); // Start the first animation
+    playRandomAnimation(); // Start the first animation
 
-  //   return () => clearTimeout(timeoutId);
-  // }, [isTalking, animations]);
+    return () => clearTimeout(timeoutId);
+  }, [isTalking, animations]);
 
   useEffect(() => {
     actions[animation]

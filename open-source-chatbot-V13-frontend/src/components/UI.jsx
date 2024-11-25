@@ -107,7 +107,7 @@ export const UI = ({ hidden, ...props }) => {
           <select
             value={language}
             onChange={handleLanguageChange}
-            className="pointer-events-auto p-3 rounded-md bg-white bg-opacity-50 shadow-md hover:shadow-lg focus:outline-none focus:bg-opacity-100"
+            className="pointer-events-auto p-3 text-2xl rounded-md bg-white bg-opacity-50 shadow-md hover:shadow-lg focus:outline-none focus:bg-opacity-100"
           >
             <option value="en-US">English</option>
             <option value="fr-FR">Français</option>
