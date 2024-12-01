@@ -1,10 +1,4 @@
-Sure, here is a detailed and well-structured 
 
-README.md
-
- file for the frontend part of your project:
-
-```md
 # Open Source Chatbot V13 Frontend
 
 ## Author
