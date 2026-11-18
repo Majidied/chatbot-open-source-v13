@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend Build (React + Three.js + Vite)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: open-source-chatbot-V13-frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: open-source-chatbot-V13-frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  backend:
+    name: Backend Syntax Check (Express + Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: open-source-chatbot-V13-backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: open-source-chatbot-V13-backend/package-lock.json
+      - run: npm ci
+      - run: node -c index.js && node -c content.js
+      - run: python3 -m py_compile local_model.py Transcribe.py

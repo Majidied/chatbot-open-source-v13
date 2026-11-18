@@ -1,0 +1,26 @@
+# OS & IDE
+.DS_Store
+.idea/
+.vscode/
+*.sw?
+
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+*.local
+
+# Local audit notes
+REPO_AUDIT.md

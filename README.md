@@ -1,139 +1,141 @@
-# Chatbot - Open Source V13
+# 3D Multilingual Avatar Chatbot — Virtual Friend
 
-## Overview
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![Three.js](https://img.shields.io/badge/Three.js-R3F-000000?logo=threedotjs&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-4.1-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Express_4-339933?logo=nodedotjs&logoColor=white)
+![Python](https://img.shields.io/badge/Python-Transformers_%26_Whisper-3776AB?logo=python&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-Open Source Chatbot V13 is a chatbot application with both backend and frontend components. The backend is built using Node.js and Express, while the frontend is built using React and Vite. The chatbot uses the Blenderbot model for generating responses and integrates text-to-speech and lip sync functionalities.
+An interactive **3D AI Virtual Assistant** rendered in WebGL with React Three Fiber and ReadyPlayerMe avatars. Users can speak in 12 languages via browser speech recognition and receive expressive, lip-synced 3D responses backed by conversational AI, Text-to-Speech (TTS), and Rhubarb Lip Sync.
+
+> **Project Status:** Completed academic / open-source 1337 (42 Network) project (`OPEN SOURCE 13`). Source code is maintained locally with automated frontend build & backend syntax CI checks.
+
+---
+
+## Live 3D Avatar Demo
+
+![3D Avatar Speaking & Lip-Sync Demo](docs/images/avatar-demo.gif)
+
+---
+
+## Architecture & Conversation Pipeline
+
+```mermaid
+flowchart LR
+    A[User Voice / Text Input] --> B[Web Speech Recognition<br/>12 Languages]
+    B --> C[Node.js / Express<br/>POST /chat]
+    C --> D[LLM Response Engine<br/>OpenAI GPT-4o / Python Blenderbot]
+    D --> E[TTS Audio Generation<br/>OpenAI / ElevenLabs TTS]
+    E --> F[FFmpeg + Rhubarb Lip-Sync<br/>Phoneme Viseme JSON]
+    F --> G[Three.js / React Three Fiber<br/>3D ReadyPlayerMe Avatar]
+```
+
+### How It Works
+1. **Multilingual Voice Capture ([UI.jsx](open-source-chatbot-V13-frontend/src/components/UI.jsx))**: Captures speech in 12 selectable languages (`en-US`, `fr-FR`, `ar-SA`, `es-ES`, `de-DE`, `it-IT`, `ja-JP`, `ko-KR`, `pt-BR`, `ru-RU`, `zh-CN`, `tr-TR`) using the Web Speech API.
+2. **Backend Orchestration ([index.js](open-source-chatbot-V13-backend/index.js) & [content.js](open-source-chatbot-V13-backend/content.js))**: Receives messages on `POST /chat`, maintains session conversation history, detects language via `franc`, and selects facial expressions (`smile`, `sad`, `angry`, `shocked`, `thinking`, `default`) plus 3D skeletal animations (`Talking_1`–`Talking_4`, `Greeting`, etc.).
+3. **Local AI Helpers ([local_model.py](open-source-chatbot-V13-backend/local_model.py) & [Transcribe.py](open-source-chatbot-V13-backend/Transcribe.py))**: Experimental scripts for offline response generation with `facebook/blenderbot-400M-distill` and multilingual speech transcription with OpenAI Whisper.
+4. **Audio + Lip-Sync Generation**: Converts TTS MP3 responses to WAV via `ffmpeg`, generates timed mouth cues with Rhubarb Lip Sync (including phonetic Arabic support), and streams base64 audio + viseme JSON to the client.
+5. **Real-Time 3D Rendering ([Avatar.jsx](open-source-chatbot-V13-frontend/src/components/Avatar.jsx) & [Experience.jsx](open-source-chatbot-V13-frontend/src/components/Experience.jsx))**: Smoothly blends ReadyPlayerMe blendshapes (`viseme_PP`, `viseme_kk`, `viseme_I`, `viseme_AA`, `viseme_O`, `viseme_U`, `viseme_FF`, `viseme_TH`), blinking, and skeletal clips in real time.
+
+---
+
+## Screenshots
+
+| Desktop 3D Avatar & Controls | Responsive Mobile View |
+| :---: | :---: |
+| ![Desktop 3D Avatar Chat UI](docs/images/desktop-chat-ui.png) | ![Mobile 3D Avatar Chat UI](docs/images/mobile-chat-ui.png) |
+
+---
 
 ## Project Structure
 
-```
-open-source-chatbot-V13-backend/
- .env
- .env.example
- .gitignore
- audios/
-  api_0.json
-  api_1.json
-  intro_0.json
-  intro_1.json
- index.js
- local_model.py
- package.json
- README.md
-open-source-chatbot-V13-frontend/
- .gitignore
- index.html
- package.json
- postcss.config.js
- public/
-  animations/
-   Angry.fbx
-   Crying.fbx
-   ...
-  models/
-   ...
- README.md
- src/
-  App.jsx
-  assets/
-  components/
-  hooks/
-  index.css
-  main.jsx
- tailwind.config.js
- vite.config.js
-README.md
+```text
+chatbot-open-source-v13/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                       # Frontend build + backend syntax CI
+├── docs/
+│   └── images/                          # README screenshots & demo GIF
+├── open-source-chatbot-V13-frontend/    # React + Vite + Three.js client
+│   ├── public/
+│   │   ├── animations/
+│   │   │   └── animations.glb           # Combined Mixamo/RPM skeletal animations
+│   │   ├── models/                      # ReadyPlayerMe 3D avatars (Victor, Alex, Dayo, etc.)
+│   │   ├── bg.mp4 / bg1.mp4             # Ambient video backgrounds
+│   │   └── logo.png                     # Branding overlay
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Avatar.jsx               # Viseme lip-sync, facial morphs & animation mixer
+│   │   │   ├── Experience.jsx           # CameraControls, HDRI lighting & 3D scene
+│   │   │   └── UI.jsx                   # 12-language selector & voice recognition trigger
+│   │   ├── hooks/
+│   │   │   └── useChat.jsx              # Chat context, queue state & backend API client
+│   │   └── App.jsx                      # Canvas & UI root layout
+│   ├── .env.example
+│   └── package.json
+├── open-source-chatbot-V13-backend/     # Express server & speech/AI scripts
+│   ├── audios/                          # Sample MP3/WAV responses & Rhubarb JSON cues
+│   ├── index.js                         # /chat endpoint, OpenAI/TTS & Rhubarb pipeline
+│   ├── content.js                       # System prompt / persona definition
+│   ├── local_model.py                   # Offline Blenderbot-400M dialogue generator
+│   ├── Transcribe.py                    # Offline Whisper audio transcription script
+│   ├── .env.example
+│   └── package.json
+├── .gitignore
+└── LICENSE                              # MIT License
 ```
 
-## Backend
+---
 
-### Description
+## Getting Started
 
-The backend handles the following functionalities:
+### Prerequisites
+- **Node.js** 18+ and **npm**
+- **Python** 3.10+ (optional, for `local_model.py` / `Transcribe.py`)
+- **FFmpeg** and **Rhubarb Lip Sync** binary in `open-source-chatbot-V13-backend/bin/rhubarb` (required for live backend lip-sync generation)
+- OpenAI / ElevenLabs API key(s) configured in backend `.env`
 
-- **Chat Endpoint**: Processes user messages, generates responses, and sends them back to the frontend.
-- **Text-to-Speech**: Converts text messages to audio files using the ElevenLabs API.
-- **Lip Sync**: Generates lip sync data for the audio files.
-- **File Handling**: Reads audio files and JSON transcripts, converting them to base64 format for transmission.
+### 1. Clone the Repository
+```bash
+git clone https://github.com/M-MAJIDI/chatbot-open-source-v13.git
+cd chatbot-open-source-v13
+```
 
-### Key Files
+### 2. Backend Setup
+```bash
+cd open-source-chatbot-V13-backend
+cp .env.example .env
+# Edit .env and add OPENAI_API_KEY / ELEVEN_LABS_API_KEY
+npm install
+npm run dev
+```
+The backend server listens on `http://localhost:3000` by default (`PORT` configurable).
 
-- [`index.js`](command:_github.copilot.openSymbolInFile?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FC%3A%2FUsers%2Fdell%2FDesktop%2FOpen%20Source%20Project%2Fopen-source-chatbot-V13%2Fopen-source-chatbot-V13-backend%2Findex.js%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22index.js%22%2C%2272bbba21-a7d6-40e9-9ecd-613ead0dbaf8%22%5D "c:\Users\dell\Desktop\Open Source Project\open-source-chatbot-V13\open-source-chatbot-V13-backend\index.js"): Main server file that sets up the Express app and defines the chat endpoint.
-- [`local_model.py`](command:_github.copilot.openSymbolInFile?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FC%3A%2FUsers%2Fdell%2FDesktop%2FOpen%20Source%20Project%2Fopen-source-chatbot-V13%2Fopen-source-chatbot-V13-backend%2Flocal_model.py%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22local_model.py%22%2C%2272bbba21-a7d6-40e9-9ecd-613ead0dbaf8%22%5D "c:\Users\dell\Desktop\Open Source Project\open-source-chatbot-V13\open-source-chatbot-V13-backend\local_model.py"): Contains the Blenderbot model and tokenizer setup and response generation logic.
-- `audios/`: Directory containing audio files and JSON transcripts for lip sync.
-- [`.env.example`](command:_github.copilot.openSymbolInFile?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FC%3A%2FUsers%2Fdell%2FDesktop%2FOpen%20Source%20Project%2Fopen-source-chatbot-V13%2Fopen-source-chatbot-V13-backend%2F.env.example%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22.env.example%22%2C%2272bbba21-a7d6-40e9-9ecd-613ead0dbaf8%22%5D "c:\Users\dell\Desktop\Open Source Project\open-source-chatbot-V13\open-source-chatbot-V13-backend\.env.example"): Example environment file for API keys.
-- [`package.json`](command:_github.copilot.openSymbolInFile?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FC%3A%2FUsers%2Fdell%2FDesktop%2FOpen%20Source%20Project%2Fopen-source-chatbot-V13%2Fopen-source-chatbot-V13-backend%2Fpackage.json%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22package.json%22%2C%2272bbba21-a7d6-40e9-9ecd-613ead0dbaf8%22%5D "c:\Users\dell\Desktop\Open Source Project\open-source-chatbot-V13\open-source-chatbot-V13-backend\package.json"): Lists dependencies like `express`, `dotenv`, `elevenlabs-node`, and `openai`.
+### 3. Frontend Setup
+```bash
+cd ../open-source-chatbot-V13-frontend
+cp .env.example .env
+# Optional: update VITE_BACKEND_URL in .env (defaults to http://localhost:3000)
+npm install
+npm run dev
+```
+Open the URL printed by Vite (typically `http://localhost:5173`) in Chromium or Chrome for full Web Speech API support.
 
-### Setup
+---
 
-1. **Clone the repository**:
+## Configuration
 
-    ```sh
-    git clone https://github.com/Majidied/chatbot-open-source-v13.git
-    cd chatbot-open-source-V13/open-source-chatbot-V13-backend
-    ```
+| Variable | Location | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `OPENAI_API_KEY` | `open-source-chatbot-V13-backend/.env` | — | OpenAI Chat & TTS API key |
+| `ELEVEN_LABS_API_KEY` | `open-source-chatbot-V13-backend/.env` | — | ElevenLabs voice synthesis API key |
+| `PORT` | `open-source-chatbot-V13-backend/.env` | `3000` | Express server port |
+| `VITE_BACKEND_URL` | `open-source-chatbot-V13-frontend/.env` | `http://localhost:3000` | Backend base URL used by `useChat.jsx` |
 
-2. **Install dependencies**:
-
-    ```sh
-    npm install
-    ```
-
-3. **Set up environment variables**:
-    - Copy `.env.example` to `.env` and fill in the required API keys.
-
-4. **Run the server**:
-
-    ```sh
-    node index.js
-    ```
-
-## Frontend
-
-### Description
-
-The frontend provides the user interface for interacting with the chatbot. It is built using React and Vite.
-
-### Key Files
-
-- [`App.jsx`](command:_github.copilot.openSymbolInFile?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FC%3A%2FUsers%2Fdell%2FDesktop%2FOpen%20Source%20Project%2Fopen-source-chatbot-V13%2Fopen-source-chatbot-V13-frontend%2Fsrc%2FApp.jsx%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22App.jsx%22%2C%2272bbba21-a7d6-40e9-9ecd-613ead0dbaf8%22%5D "c:\Users\dell\Desktop\Open Source Project\open-source-chatbot-V13\open-source-chatbot-V13-frontend\src\App.jsx"): Main application component that sets up the UI and integrates other components.
-- [`UI.jsx`](command:_github.copilot.openSymbolInFile?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FC%3A%2FUsers%2Fdell%2FDesktop%2FOpen%20Source%20Project%2Fopen-source-chatbot-V13%2Fopen-source-chatbot-V13-frontend%2Fsrc%2Fcomponents%2FUI.jsx%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22UI.jsx%22%2C%2272bbba21-a7d6-40e9-9ecd-613ead0dbaf8%22%5D "c:\Users\dell\Desktop\Open Source Project\open-source-chatbot-V13\open-source-chatbot-V13-frontend\src\components\UI.jsx"): Component for the chat interface, including input fields and send buttons.
-- [`useChat.jsx`](command:_github.copilot.openSymbolInFile?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FC%3A%2FUsers%2Fdell%2FDesktop%2FOpen%20Source%20Project%2Fopen-source-chatbot-V13%2Fopen-source-chatbot-V13-frontend%2Fsrc%2Fhooks%2FuseChat.jsx%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22useChat.jsx%22%2C%2272bbba21-a7d6-40e9-9ecd-613ead0dbaf8%22%5D "c:\Users\dell\Desktop\Open Source Project\open-source-chatbot-V13\open-source-chatbot-V13-frontend\src\hooks\useChat.jsx"): Custom hook for managing chat state and communicating with the backend.
-- [`index.html`](command:_github.copilot.openSymbolInFile?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FC%3A%2FUsers%2Fdell%2FDesktop%2FOpen%20Source%20Project%2Fopen-source-chatbot-V13%2Fopen-source-chatbot-V13-frontend%2Findex.html%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22index.html%22%2C%2272bbba21-a7d6-40e9-9ecd-613ead0dbaf8%22%5D "c:\Users\dell\Desktop\Open Source Project\open-source-chatbot-V13\open-source-chatbot-V13-frontend\index.html"): Entry point for the frontend application.
-- `public/animations/`: Directory containing animation files.
-- `public/models/`: Directory containing 3D models.
-
-### Setup
-
-1. **Navigate to the frontend directory**:
-
-    ```sh
-    cd chatbot-open-source-V13/open-source-chatbot-V13-frontend
-    ```
-
-2. **Install dependencies**:
-
-    ```sh
-    npm install
-    ```
-
-3. **Run the development server**:
-
-    ```sh
-    npm run dev
-    ```
-
-## How It Works
-
-1. **User Interaction**: Users interact with the chatbot through the frontend UI.
-2. **Message Handling**: The frontend sends user messages to the backend via the `/chat` endpoint.
-3. **Response Generation**: The backend processes the message, generates a response, converts it to audio, and creates lip sync data.
-4. **Response Display**: The frontend receives the response and displays it, including playing the audio and showing the lip sync animation.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+---
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
