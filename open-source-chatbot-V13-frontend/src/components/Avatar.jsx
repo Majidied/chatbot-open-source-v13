@@ -23,23 +23,29 @@ const facialExpressions = {
     mouthPressRight: 0.41000000000000003,
   },
   funnyFace: {
-    jawLeft: 0.63,
-    mouthPucker: 0.53,
+    viseme_PP: 0.09564575641329172,
+    viseme_TH: 0.14210517812412227,
+    viseme_RR: 0.15,
+    viseme_E: 0.17,
+    viseme_O: 0.04736839270804076,
+    mouthPucker: 0.67,
     noseSneerLeft: 1,
-    noseSneerRight: 0.39,
-    mouthLeft: 1,
-    eyeLookUpLeft: 1,
-    eyeLookUpRight: 1,
-    cheekPuff: 0.9999924982764238,
-    mouthDimpleLeft: 0.414743888682652,
-    mouthRollLower: 0.32,
-    mouthSmileLeft: 0.35499733688813034,
-    mouthSmileRight: 0.35499733688813034,
+    mouthLowerDownLeft: 0.34,
+    eyeLookInRight: 1,
+    cheekPuff: 0.9,
+    cheekSquintLeft: 1,
+    cheekSquintRight: 1,
+    mouthFunnel: 0.06,
+    mouthDimpleLeft: 0.11990717351878255,
+    mouthPressLeft: 0.63,
+    mouthPressRight: 1,
+    mouthSmileLeft: 0.0699458512192899,
+    mouthSmileRight: 0.14
   },
   sad: {
-    mouthFrownLeft: 1,
-    mouthFrownRight: 1,
-    mouthShrugLower: 0.78341,
+    mouthFrownLeft: 0.60,
+    mouthFrownRight: 0.60,
+    mouthShrugLower: 0.41,
     browInnerUp: 0.452,
     eyeSquintLeft: 0.72,
     eyeSquintRight: 0.75,
@@ -48,29 +54,28 @@ const facialExpressions = {
     jawForward: 1,
   },
   surprised: {
-    eyeWideLeft: 0.5,
-    eyeWideRight: 0.5,
-    jawOpen: 0.351,
-    mouthFunnel: 1,
-    browInnerUp: 1,
+    browInnerUp: 0.9996566348450061,
+    eyeWideLeft: 0.4996867106258911,
+    eyeWideRight: 0.4996867106258911,
+    mouthFunnel: 0.17
   },
   angry: {
     browDownLeft: 1,
-    browDownRight: 1,
-    eyeSquintLeft: 1,
+    browDownRight: 0.9999999941970116,
+    eyeSquintLeft: 0.9999999983751632,
     eyeSquintRight: 1,
     jawForward: 1,
-    jawLeft: 1,
-    mouthShrugLower: 1,
-    noseSneerLeft: 1,
-    noseSneerRight: 0.42,
-    eyeLookDownLeft: 0.16,
-    eyeLookDownRight: 0.16,
+    jawLeft: 0.22,
+    mouthShrugLower: 0.872,
+    noseSneerLeft: 0.6100000000000004,
+    noseSneerRight: 0.6300000000000004,
+    eyeLookDownLeft: 0.16000000197301611,
+    eyeLookDownRight: 0.16000000197301611,
     cheekSquintLeft: 1,
     cheekSquintRight: 1,
-    mouthClose: 0.23,
-    mouthFunnel: 0.63,
-    mouthDimpleRight: 1,
+    mouthClose: 0.14,
+    mouthFunnel: 0.64,
+    mouthDimpleRight: 0.59
   },
   crazy: {
     browInnerUp: 0.9,
@@ -108,10 +113,11 @@ let setupMode = false;
 
 export function Avatar(props) {
   const { nodes, materials, scene } = useGLTF(
-    "/models/64f1a714fe61576b46f27ca2.glb"
+    "/models/Victor.glb", true
   );
 
   const { message, onMessagePlayed, chat } = useChat();
+  const [isTalking, setIsTalking] = useState(false);
 
   const [lipsync, setLipsync] = useState();
 
@@ -121,6 +127,7 @@ export function Avatar(props) {
       setAnimation("Idle");
       return;
     }
+    setIsTalking(true);
     setAnimation(message.animation);
     setFacialExpression(message.facialExpression);
     setLipsync(message.lipsync);
@@ -128,15 +135,44 @@ export function Avatar(props) {
     audio.play();
     setAudio(audio);
     audio.onended = onMessagePlayed;
+    return () => {
+      setIsTalking(false);
+      setAudio(null);
+      setFacialExpression("smile");
+    }
   }, [message]);
 
-  const { animations } = useGLTF("/models/animations.glb");
+  const { animations } = useGLTF("/animations/animations.glb");
 
   const group = useRef();
   const { actions, mixer } = useAnimations(animations, group);
+  const idleAnimations = ["Idle", "Idle", "Idle", "Idle_01", "Idle", "Idle", "Idle_02", "Idle", "Idle", "Idle_03", "Idle", "Idle", "Idle_04", "Idle", "Idle", "Idle_05", "Idle", "Idle", "Idle_06", "Idle", "Idle", "Idle_07", "Idle", "Idle", "Idle_08", "Idle", "Idle", "Idle_09", "Idle", "Idle", "Idle_10", "Idle", "Idle", "Idle_11", "Idle", "Idle", "Idle_12", "Idle", "Idle"]
   const [animation, setAnimation] = useState(
     animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
   );
+
+  useEffect(() => {
+    if (isTalking) return; // If talking, don't play idle animations
+    let timeoutId;
+
+    const getAnimationDuration = (animationName) => {
+      const animationClip = animations.find((a) => a.name === animationName);
+      return animationClip ? animationClip.duration * 1000 : 5000; // Default to 5000ms if not found
+    };
+
+    const playRandomAnimation = () => {
+      if (isTalking) return; // If talking, don't play idle animations
+      const randomAnimation = idleAnimations[Math.floor(Math.random() * idleAnimations.length)];
+      setAnimation(randomAnimation);
+      const duration = getAnimationDuration(randomAnimation);
+      timeoutId = setTimeout(playRandomAnimation, duration);
+    };
+
+    playRandomAnimation(); // Start the first animation
+
+    return () => clearTimeout(timeoutId);
+  }, [isTalking, animations]);
+
   useEffect(() => {
     actions[animation]
       .reset()
@@ -166,7 +202,7 @@ export function Avatar(props) {
             set({
               [target]: value,
             });
-          } catch (e) {}
+          } catch (e) { }
         }
       }
     });
@@ -236,7 +272,7 @@ export function Avatar(props) {
     }),
     animation: {
       value: animation,
-      options: animations.map((a) => a.name),
+      options: animations ? animations.map((a) => a.name) : [],
       onChange: (value) => setAnimation(value),
     },
     facialExpression: {
@@ -257,7 +293,7 @@ export function Avatar(props) {
         }
         const value =
           nodes.EyeLeft.morphTargetInfluences[
-            nodes.EyeLeft.morphTargetDictionary[key]
+          nodes.EyeLeft.morphTargetDictionary[key]
           ];
         if (value > 0.01) {
           emotionValues[key] = value;
@@ -304,9 +340,9 @@ export function Avatar(props) {
     nextBlink();
     return () => clearTimeout(blinkTimeout);
   }, []);
-
+  //     <group {...props} dispose={null} ref={group}>
   return (
-    <group {...props} dispose={null} ref={group}>
+    <group {...props} dispose={null} ref={group} position={[0, 0.2, 0]}>
       <primitive object={nodes.Hips} />
       <skinnedMesh
         name="Wolf3D_Body"
@@ -374,5 +410,5 @@ export function Avatar(props) {
   );
 }
 
-useGLTF.preload("/models/64f1a714fe61576b46f27ca2.glb");
+useGLTF.preload("/models/Vector.glb");
 useGLTF.preload("/models/animations.glb");
